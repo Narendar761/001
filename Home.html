@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Downloader with Timer</title>
+</head>
+<body>
+  <h2>Sach baat</h2>
+
+  <input type="text" id="linkInput" placeholder="Enter your link here" style="width: 300px;">
+  <button onclick="startTimer()">Download</button>
+
+  <p id="timerDisplay" style="font-weight: bold;"></p>
+
+  <script>
+    let countdown;
+
+    function startTimer() {
+      const input = document.getElementById('linkInput').value.trim();
+      if (!input) {
+        alert('Please enter a link.');
+        return;
+      }
+
+      let timeLeft = 600; // 10 minutes in seconds
+      const timerDisplay = document.getElementById('timerDisplay');
+      updateDisplay(timeLeft);
+
+      countdown = setInterval(() => {
+        timeLeft--;
+        updateDisplay(timeLeft);
+
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          const finalURL = 'https://teradlrobot.cheemsbackup.workers.dev/?url=' + encodeURIComponent(input);
+          window.location.href = finalURL;
+        }
+      }, 1000);
+    }
+
+    function updateDisplay(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      document.getElementById('timerDisplay').textContent = 
+        `Download will start in: ${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+  </script>
+</body>
+</html>
