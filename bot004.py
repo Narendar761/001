@@ -162,7 +162,7 @@ async def help_handler(client: Client, message: Message):
         f"Note: Large files may take time to download and upload."
     )
 
-@app.on_message(filters.text & ~filters.edited)
+@app.on_message(filters.text)
 async def link_handler(client: Client, message: Message):
     """Handle TeraBox links"""
     link = message.text.strip()
