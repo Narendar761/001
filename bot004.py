@@ -1,5 +1,5 @@
-from pyrofork import Client, filters
-from pyrofork.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram import Client, filters
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 import aiohttp
 import os
 import re
@@ -211,7 +211,7 @@ async def link_handler(client: Client, message: Message):
                     raise DownloadError(f"File too large ({actual_size_mb:.1f}MB > {MAX_UPLOAD_SIZE_MB}MB)")
                 
                 # Determine if it's a video file
-                is_video = any(file_path.lower().endswith(ext) for ext in ['.mp4', '.mov', '.avi', '.mkv', '.webm']
+                is_video = any(file_path.lower().endswith(ext) for ext in ['.mp4', '.mov', '.avi', '.mkv', '.webm'])
                 
                 # Upload the file with progress updates
                 await upload_file_with_progress(client, message, file_path, caption, is_video)
