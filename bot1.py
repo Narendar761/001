@@ -1,5 +1,5 @@
-from pyrofork import Client, filters
-from pyrofork.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram import Client, filters
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 import aiohttp
 import os
 import re
@@ -110,7 +110,7 @@ async def help_handler(client: Client, message: Message):
         "Note: This bot uses a third-party API to fetch download links."
     )
 
-@app.on_message(filters.text & ~filters.edited)
+@app.on_message(filters.text)
 async def link_handler(client: Client, message: Message):
     """Handle TeraBox links"""
     link = message.text.strip()
