@@ -18,7 +18,7 @@ API_ID = os.getenv("API_ID", "YOUR_API_ID")
 API_HASH = os.getenv("API_HASH", "YOUR_API_HASH")
 BOT_TOKEN = os.getenv("BOT_TOKEN", "YOUR_BOT_TOKEN")
 
-app = Client("terabox_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
+app = Client("Instagram_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 
 
 MAX_VIDEO_SIZE_MB = 50  # Telegram's limit for bots is usually 50MB
@@ -68,8 +68,8 @@ async def start_handler(client: Client, message: Message):
     await message.reply_photo(
         photo="https://graph.org/file/4e8a1172e8ba4b7a0bdfa.jpg",
         caption=(
-            "👋 Welcome to TeraBox Downloader Bot!\n\n"
-            "Send me a TeraBox sharing link to download files.\n\n"
+            "👋 Welcome to instagram Downloader Bot!\n\n"
+            "Send me a Instagram sharing link to download files.\n\n"
             "Commands available:\n"
             "/start - Show this message\n"
             "/mode - Toggle between direct download and upload modes\n"
@@ -99,8 +99,8 @@ async def mode_handler(client: Client, message: Message):
 async def help_handler(client: Client, message: Message):
     """Show help information"""
     await message.reply(
-        "ℹ️ TeraBox Downloader Bot Help\n\n"
-        "1. Send a TeraBox sharing link to download the file\n"
+        "ℹ️ Instagram Downloader Bot Help\n\n"
+        "1. Send a Instagram sharing link to download the file\n"
         "2. Use /mode to toggle between getting download links or direct file uploads\n"
         "3. Files larger than 50MB will always be sent as links\n\n"
         "Note: This bot uses a third-party API to fetch download links."
@@ -108,7 +108,7 @@ async def help_handler(client: Client, message: Message):
 
 @app.on_message(filters.text)
 async def link_handler(client: Client, message: Message):
-    """Handle TeraBox links"""
+    """Handle Instagram links"""
     link = message.text.strip()
     if not TERABOX_REGEX.match(link):
         return
@@ -206,5 +206,5 @@ async def link_handler(client: Client, message: Message):
         await message.reply(f"❌ An unexpected error occurred:\n{str(e)}")
 
 if __name__ == "__main__":
-    logger.info("Starting TeraBox Downloader Bot...")
+    logger.info("Starting Instagram Downloader Bot...")
     app.run()
