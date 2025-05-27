@@ -16,12 +16,12 @@ async function handleRequest(request) {
 
   try {
     // Step 1: Fetch data from the original API
-    const apiUrl = `https://teradl1.vercel.app/api?url=${encodeURIComponent(link)}`
+    const apiUrl = `https://terabox.sg61x.workers.dev/?url=${encodeURIComponent(link)}`
     const apiResponse = await fetch(apiUrl)
     const apiData = await apiResponse.json()
 
     // Check if API response is successful and contains download link
-    if (apiData.status !== 'success' || !apiData['Extracted Info']?.[0]?.['Direct Download Link']) {
+    if (apiData.status !== 'success' || !apiData['structure']?.[0]?.['direct_link']) {
       return new Response(JSON.stringify(apiData), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
@@ -29,7 +29,7 @@ async function handleRequest(request) {
     }
 
     // Step 2: Get the direct download link
-    const downloadLink = apiData['Extracted Info'][0]['Direct Download Link']
+    const downloadLink = apiData['structure'][0]['direct_link']
     const fileName = apiData['Extracted Info'][0]['Title'] || 'download'
 
     // Step 3: Fetch the file from the download link
