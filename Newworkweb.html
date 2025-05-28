@@ -3,66 +3,312 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium TeraBox Video Downloader</title>
+    <title>TeraBox Video Downloader</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* [Previous CSS remains exactly the same] */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: #2b2d42;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: 30px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #4361ee;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #495057;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .search-box {
+            margin-bottom: 25px;
+        }
+        
+        .input-group {
+            display: flex;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        #teraboxUrl {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 50px;
+            font-size: 1rem;
+            outline: none;
+        }
+        
+        #teraboxUrl:focus {
+            border-color: #4895ef;
+        }
+        
+        #fetchBtn {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            bottom: 5px;
+            width: 120px;
+            background: linear-gradient(135deg, #4361ee 0%, #3f37c9 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .timer-container {
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .timer-circle {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #4361ee;
+            line-height: 60px;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+        
+        .result-container {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(67, 97, 238, 0.05);
+            border-radius: 10px;
+        }
+        
+        .video-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #4cc9f0 0%, #4895ef 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(67, 97, 238, 0.1);
+            border-top: 4px solid #4361ee;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error {
+            color: #f72585;
+            background-color: rgba(247, 37, 133, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            #fetchBtn {
+                position: relative;
+                width: 100%;
+                margin-top: 10px;
+                right: auto;
+                top: auto;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- [Previous HTML structure remains exactly the same until the script section] -->
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-cloud-download-alt"></i> TeraBox Video Downloader</h1>
+            <p>Download videos from TeraBox by pasting the share link below</p>
+        </div>
+        
+        <div class="search-box">
+            <div class="input-group">
+                <input type="text" id="teraboxUrl" placeholder="https://www.terabox.com/share/..." autocomplete="off">
+                <button id="fetchBtn">Get Video</button>
+            </div>
+            
+            <div class="timer-container" id="timerContainer">
+                <div class="timer-circle" id="timerCircle">20</div>
+            </div>
+            
+            <div class="error" id="errorMsg"></div>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Processing your request...</p>
+            </div>
+            
+            <div class="result-container" id="resultContainer">
+                <div class="video-title" id="videoTitle"></div>
+                <div id="videoSize"></div>
+                <a href="#" class="download-btn" id="downloadBtn" target="_blank">
+                    <i class="fas fa-download"></i> Download Now
+                </a>
+            </div>
+        </div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // [Previous variable declarations remain the same]
+            const teraboxUrl = document.getElementById('teraboxUrl');
+            const fetchBtn = document.getElementById('fetchBtn');
+            const timerContainer = document.getElementById('timerContainer');
+            const timerCircle = document.getElementById('timerCircle');
+            const resultContainer = document.getElementById('resultContainer');
+            const videoTitle = document.getElementById('videoTitle');
+            const videoSize = document.getElementById('videoSize');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const loading = document.getElementById('loading');
+            const errorMsg = document.getElementById('errorMsg');
             
-            function fetchVideoInfo(url) {
-                // Show loading, hide result and error
+            let timer = 20;
+            let timerInterval;
+            
+            fetchBtn.addEventListener('click', fetchVideoInfo);
+            teraboxUrl.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') fetchVideoInfo();
+            });
+            
+            function fetchVideoInfo() {
+                const url = teraboxUrl.value.trim();
+                
+                // Validate URL
+                if (!url) {
+                    showError("Please enter a TeraBox URL");
+                    return;
+                }
+                
+                if (!url.includes('terabox.com') && !url.includes('teraboxapp.com')) {
+                    showError("Please enter a valid TeraBox URL");
+                    return;
+                }
+                
+                // Start countdown
+                startCountdown();
+            }
+            
+            function startCountdown() {
+                clearInterval(timerInterval);
+                timer = 20;
+                updateTimerDisplay();
+                
+                // Show timer and loading
+                timerContainer.style.display = 'block';
                 loading.style.display = 'block';
                 resultContainer.style.display = 'none';
                 errorMsg.style.display = 'none';
+                fetchBtn.disabled = true;
                 
-                // Call WordPress proxy endpoint instead of direct API
-                const proxyUrl = '/wp-json/terabox/v1/download?url=' + encodeURIComponent(url);
+                timerInterval = setInterval(() => {
+                    timer--;
+                    updateTimerDisplay();
+                    
+                    if (timer <= 0) {
+                        clearInterval(timerInterval);
+                        fetchBtn.disabled = false;
+                        timerContainer.style.display = 'none';
+                        getVideoInfo();
+                    }
+                }, 1000);
+            }
+            
+            function updateTimerDisplay() {
+                timerCircle.textContent = timer;
                 
-                fetch(proxyUrl)
+                if (timer <= 5) {
+                    timerCircle.style.color = 'white';
+                    timerCircle.style.backgroundColor = '#f72585';
+                    timerCircle.style.borderColor = '#f72585';
+                }
+            }
+            
+            function getVideoInfo() {
+                const url = teraboxUrl.value.trim();
+                
+                // Use WordPress proxy endpoint
+                fetch(`/wp-json/terabox/v1/download?url=${encodeURIComponent(url)}`)
                     .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
+                        if (!response.ok) throw new Error('Network error');
                         return response.json();
                     })
                     .then(data => {
-                        if (data && data.title && data.download_link) {
-                            // Success - display the result
+                        if (data.title && data.download_link) {
                             videoTitle.textContent = data.title;
-                            videoSize.textContent = data.size ? `Size: ${data.size}` : '';
-                            
-                            // Try to detect format from title
-                            const format = data.title.split('.').pop().toUpperCase();
-                            videoFormat.textContent = format.match(/MP4|MKV|AVI|MOV|FLV/) 
-                                ? `Format: ${format}` 
-                                : '';
-                            
+                            videoSize.textContent = data.size || '';
                             downloadBtn.href = data.download_link;
                             resultContainer.style.display = 'block';
-                        } else if (data.code) {
-                            // WordPress error
-                            throw new Error(data.message || 'API error');
                         } else {
-                            throw new Error('Invalid response format');
+                            throw new Error('Invalid response from server');
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        showError(error.message || "Failed to get video information. Please try again.");
+                        showError("Failed to get video information. Please try again.");
                     })
                     .finally(() => {
                         loading.style.display = 'none';
                     });
             }
             
-            // [Rest of the JavaScript remains the same]
+            function showError(message) {
+                errorMsg.textContent = message;
+                errorMsg.style.display = 'block';
+                loading.style.display = 'none';
+            }
         });
     </script>
 </body>
