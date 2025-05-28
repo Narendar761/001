@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium TeraBox Video Downloader</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* [Previous CSS remains exactly the same] */
+    </style>
+</head>
+<body>
+    <!-- [Previous HTML structure remains exactly the same until the script section] -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // [Previous variable declarations remain the same]
+            
+            function fetchVideoInfo(url) {
+                // Show loading, hide result and error
+                loading.style.display = 'block';
+                resultContainer.style.display = 'none';
+                errorMsg.style.display = 'none';
+                
+                // Call WordPress proxy endpoint instead of direct API
+                const proxyUrl = '/wp-json/terabox/v1/download?url=' + encodeURIComponent(url);
+                
+                fetch(proxyUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data && data.title && data.download_link) {
+                            // Success - display the result
+                            videoTitle.textContent = data.title;
+                            videoSize.textContent = data.size ? `Size: ${data.size}` : '';
+                            
+                            // Try to detect format from title
+                            const format = data.title.split('.').pop().toUpperCase();
+                            videoFormat.textContent = format.match(/MP4|MKV|AVI|MOV|FLV/) 
+                                ? `Format: ${format}` 
+                                : '';
+                            
+                            downloadBtn.href = data.download_link;
+                            resultContainer.style.display = 'block';
+                        } else if (data.code) {
+                            // WordPress error
+                            throw new Error(data.message || 'API error');
+                        } else {
+                            throw new Error('Invalid response format');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showError(error.message || "Failed to get video information. Please try again.");
+                    })
+                    .finally(() => {
+                        loading.style.display = 'none';
+                    });
+            }
+            
+            // [Rest of the JavaScript remains the same]
+        });
+    </script>
+</body>
+</html>
