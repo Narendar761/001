@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="author" content="WOODcraft SudoR2spr"/>
+        <meta name="keywords" content="wdzone, Terabox, multilinks, player, Free"/>
+        <meta name="description" content="WDZONE Website Service Terabox multi links player."/>
+        <meta property="og:description" content="WDZONE Website Service Terabox video player.">
+        <meta content='https://i.ibb.co/RpQrMNVg/terabox-dl.png' property='og:image'/>
+        <link href='https://i.ibb.co/RpQrMNVg/terabox-dl.png' rel='shortcut icon' type='image/vnd.microsoft.icon'/>
+        <link href='https://i.ibb.co/RpQrMNVg/terabox-dl.png' rel='apple-touch-icon'/>
+        <link rel="icon" type="image/x-icon" href="https://i.ibb.co/RpQrMNVg/terabox-dl.png">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <title>Multi - TeraBox Links To Video Player</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: sans-serif;
+                background: #000;
+                color: #fff;
+            }
+
+            .container, .how-to-use {
+                text-align: center;
+                padding: 20px;
+            }
+
+            textarea {
+                width: 90%;
+                height: 80px;
+                padding: 10px;
+                margin-top: 10px;
+                font-size: 16px;
+                background: #222;
+                color: #fff;
+                border: 1px solid #00ffc8;
+            }
+
+            .play-button {
+                padding: 10px 20px;
+                font-size: 16px;
+                cursor: pointer;
+                background: linear-gradient(145deg, #1f1f1f, #2a2a2a);
+                border: 2px solid #00ffc8;
+                color: #fff;
+                border-radius: 8px;
+                box-shadow: 4px 4px 10px #0f0f0f, -4px -4px 10px #2e2e2e;
+                transition: all 0.3s ease;
+                margin: 10px;
+            }
+
+            .play-button:hover {
+                box-shadow: inset 2px 2px 5px #0a0a0a, inset -2px -2px 5px #3a3a3a;
+                background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
+            }
+
+            #playerSection {
+                display: none;
+            }
+
+            #videoFrame {
+                width: 100vw;
+                height: 100vh;
+                border: none;
+            }
+
+            .controls {
+                position: fixed;
+                bottom: 20px;
+                left: 0;
+                right: 0;
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+                z-index: 10;
+                background: rgba(0,0,0,0.7);
+                padding: 10px;
+            }
+
+            .how-to-use {
+                text-align: center;
+                padding: 20px;
+                margin: 20px auto;
+                max-width: 800px;
+                background: #2e2e2e;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(255,255,255,0.1);
+            }
+
+            .step {
+                padding: 15px;
+                margin: 10px 0;
+                border-radius: 8px;
+                font-size: 1rem;
+                text-align: left;
+                color: #fff;
+            }
+
+            .step1 {
+                background-color: #1e90ff;
+            }
+
+            .step2 {
+                background-color: #28a745;
+            }
+
+            .step3 {
+                background-color: #ffc107;
+                color: #000;
+            }
+
+            .step4 {
+                background-color: #dc3545;
+            }
+
+            .footer {
+                color: white;
+                text-align: center;
+                padding: 20px 0;
+                width: 100%;
+                background: #111;
+                margin-top: 30px;
+            }
+
+            .footer a {
+                color: #ffcc00;
+                text-decoration: none;
+                font-weight: bold;
+            }
+
+            .footer a:hover {
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+    <body oncontextmenu="return false;">
+        <!-- Input Section -->
+        <div class="container" id="inputSection">
+            <h2>
+                <i class="fa fa-video-camera" aria-hidden="true"></i>
+                Online Player v2
+            </h2>
+            <p>
+                <i class="fa fa-link" aria-hidden="true"></i>
+                Multi - TeraBox Links To Video Player
+            </p>
+            <textarea id="videoLinks" placeholder="Paste Single & Multiple Links Here (one per line)"></textarea>
+            <br/>
+            <button class="play-button" onclick="startVideo()">
+                <i class="fa fa-play" aria-hidden="true"></i>
+                Play Now
+            </button>
+        </div>
+        <!-- Player Section -->
+        <div id="playerSection">
+            <iframe id="videoFrame" allowfullscreen></iframe>
+            <div class="controls">
+                <button class="play-button" onclick="prevVideo()">
+                    <i class="fa fa-backward" aria-hidden="true"></i>
+                    Previous
+                </button>
+                <button class="play-button" onclick="nextVideo()">
+                    Next <i class="fa fa-forward" aria-hidden="true"></i>
+                </button>
+                <button class="play-button" onclick="backToInput()">
+                    <i class="fa fa-home" aria-hidden="true"></i>
+                    Back
+                </button>
+            </div>
+        </div>
+        <!-- How to Use Section -->
+        <div class="how-to-use" id="howToUse">
+            <h2>
+                <i class="fa fa-info" aria-hidden="true"></i>
+                How to Use This Site
+            </h2>
+            <div class="step step1">
+                <strong>
+                    <i class="fa fa-tags" aria-hidden="true"></i>
+                    Step 1:
+                </strong>
+                Paste your TeraBox video links in the input box (one per line).
+            </div>
+            <div class="step step2">
+                <strong>
+                    <i class="fa fa-tags" aria-hidden="true"></i>
+                    Step 2:
+                </strong>
+                Click the "Play Now" button to start playing.
+            </div>
+            <div class="step step3">
+                <strong>
+                    <i class="fa fa-tags" aria-hidden="true"></i>
+                    Step 3:
+                </strong>
+                Use the Previous (⏮) and Next (⏭) buttons to switch videos.
+            </div>
+            <div class="step step4">
+                <strong>
+                    <i class="fa fa-tags" aria-hidden="true"></i>
+                    Step 4:
+                </strong>
+                Click Back (🏠) to return to the home page.
+            </div>
+        </div>
+        <footer class="footer" id="footers">
+            𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐁𝐲 ◉ 
+            <a href="https://t.me/Opleech_WD" target="_blank">
+                <i class="fa fa-telegram" aria-hidden="true"></i>
+                𝐖𝐎𝐎𝐃𝐜𝐫𝐚𝐟𝐭
+            </a>
+        </footer>
+        <script>
+            let videoLinks = [];
+            let currentIndex = 0;
+
+            function startVideo() {
+                const inputText = document.getElementById("videoLinks").value.trim();
+                videoLinks = inputText.split("\n").filter(link=>link.trim() !== "");
+
+                if (videoLinks.length === 0) {
+                    alert("Please enter at least one video link!");
+                    return;
+                }
+
+                currentIndex = 0;
+                document.getElementById("inputSection").style.display = "none";
+                document.getElementById("howToUse").style.display = "none";
+                document.getElementById("footers").style.display = "none";
+                document.getElementById("playerSection").style.display = "block";
+                updateVideo();
+            }
+
+            function updateVideo() {
+                const iframe = document.getElementById("videoFrame");
+                const url = videoLinks[currentIndex];
+                iframe.src = `https://pro-ultra-hd-stream-player.woodmirror.workers.dev/?start=https://teraboxdownloaderonline.com/api/download-m3u8?terabox_link=${encodeURIComponent(url)}`;
+            }
+
+            function nextVideo() {
+                if (currentIndex < videoLinks.length - 1) {
+                    currentIndex++;
+                    updateVideo();
+                }
+            }
+
+            function prevVideo() {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    updateVideo();
+                }
+            }
+
+            function backToInput() {
+                document.getElementById("playerSection").style.display = "none";
+                document.getElementById("inputSection").style.display = "block";
+                document.getElementById("howToUse").style.display = "block";
+                document.getElementById("footers").style.display = "block";
+            }
+        </script>
+    </body>
+              </html>
+              
