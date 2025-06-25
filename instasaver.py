@@ -32,7 +32,7 @@ async def start_command(client: Client, message: Message):
 async def process_instagram_link(message: Message, url: str):
     processing_msg = await message.reply("🔍 Processing your Instagram link...")
 
-    api_url = f"https://download.kringof.com.tr/api/down.php?url={url}"
+    api_url = f"https://instagram-media-downloader-662h16y9n-narendar761s-projects.vercel.app/api/instagram?url={url}"
     try:
         response = requests.get(api_url)
         data = response.json()
